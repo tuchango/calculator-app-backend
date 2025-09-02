@@ -2,13 +2,18 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"slices"
 
 	"github.com/Knetic/govaluate"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type Calculation struct {
@@ -22,6 +27,33 @@ type CalculationRequest struct {
 }
 
 var calculations = []Calculation{}
+
+var db *gorm.DB
+
+func initDB() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	host := os.Getenv("DB_HOST")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	dbname := os.Getenv("DB_NAME")
+	port := os.Getenv("DB_PORT")
+	sslmode := os.Getenv("DB_SSLMODE")
+
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s", host, user, password, dbname, port, sslmode)
+
+	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("Could not connect to database: %v", err)
+	}
+
+	if err = db.AutoMigrate(&Calculation{}); err != nil {
+		log.Fatalf("Could not migrate: %v", err)
+	}
+}
 
 func calculateExpression(expression string) (string, error) {
 	expr, err := govaluate.NewEvaluableExpression(expression)
@@ -93,6 +125,8 @@ func deleteCalculations(c echo.Context) error {
 }
 
 func main() {
+	initDB()
+
 	e := echo.New()
 
 	e.Use(middleware.Logger())
