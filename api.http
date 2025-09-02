@@ -1,0 +1,37 @@
+@host = localhost:8080
+@base = http://{{host}}
+@id = 1043087a-d307-49ee-aeab-97b25b1e4631
+
+###
+
+# @name getCalculations
+# Получить все вычисления
+GET {{base}}/calculations HTTP/1.1
+
+###
+
+# @name postCalculation
+# Создать новое вычисление
+POST {{base}}/calculations HTTP/1.1
+Content-Type: application/json
+
+{
+    "expression": "12+34"
+}
+
+###
+
+# @name patchCalculation
+# Изменить существующее вычисление
+PATCH {{base}}/calculations/{{id}} HTTP/1.1
+Content-Type: application/json
+
+{
+    "expression": "1111+3"
+}
+
+###
+
+# @name deleteCalculation
+# Удалить существующее вычисление
+DELETE {{base}}/calculations/{{id}} HTTP/1.1
