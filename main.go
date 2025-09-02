@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/Knetic/govaluate"
 	"github.com/google/uuid"
@@ -22,32 +23,52 @@ type CalculationRequest struct {
 
 var calculations = []Calculation{}
 
-func calculateExpression(expression string) string {
-	expr, _ := govaluate.NewEvaluableExpression(expression)
-	res, _ := expr.Evaluate(nil)
-	return fmt.Sprint(res)
+func calculateExpression(expression string) (string, error) {
+	expr, err := govaluate.NewEvaluableExpression(expression)
+	if err != nil {
+		return "", err
+	}
+
+	res, err := expr.Evaluate(nil)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprint(res), nil
 }
 
 func getCalculations(c echo.Context) error {
-	c.JSON(http.StatusOK, calculations)
-	return nil
+	return c.JSON(http.StatusOK, calculations)
 }
 
 func postCalculations(c echo.Context) error {
 	var req CalculationRequest
-	_ = c.Bind(&req)
-	res := calculateExpression(req.Expression)
+
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request"})
+	}
+
+	res, err := calculateExpression(req.Expression)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": fmt.Sprint("Invalid expression: ", err)})
+	}
+
 	calc := Calculation{ID: uuid.NewString(), Expression: req.Expression, Result: res}
 	calculations = append(calculations, calc)
-	c.JSON(http.StatusCreated, calc)
-	return nil
+	return c.JSON(http.StatusCreated, calc)
 }
 
 func patchCalculations(c echo.Context) error {
 	id := c.Param("id")
 	var req CalculationRequest
-	_ = c.Bind(&req)
-	res := calculateExpression(req.Expression)
+
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request"})
+	}
+
+	res, err := calculateExpression(req.Expression)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": fmt.Sprint("Invalid expression: ", err)})
+	}
 
 	for i, calc := range calculations {
 		if calc.ID == id {
@@ -56,7 +77,7 @@ func patchCalculations(c echo.Context) error {
 			return c.JSON(http.StatusOK, calculations[i])
 		}
 	}
-	return c.JSON(http.StatusBadRequest, map[string]string{"error": "calc not found"})
+	return c.JSON(http.StatusBadRequest, map[string]string{"error": "Calculation not found"})
 }
 
 func deleteCalculations(c echo.Context) error {
@@ -64,16 +85,11 @@ func deleteCalculations(c echo.Context) error {
 
 	for i, calc := range calculations {
 		if calc.ID == id {
-			calculations = remove(calculations, i)
+			calculations = slices.Delete(calculations, i, i+1)
 			return c.NoContent(http.StatusNoContent)
 		}
 	}
-	return c.JSON(http.StatusBadRequest, map[string]string{"error": "calc not found"})
-}
-
-func remove(s []Calculation, i int) []Calculation {
-	s[i] = s[len(s)-1]
-	return s[:len(s)-1]
+	return c.JSON(http.StatusBadRequest, map[string]string{"error": "Calculation not found"})
 }
 
 func main() {
