@@ -65,7 +65,7 @@ func calculateExpression(expression string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprint(res), nil
+	return fmt.Sprintf("%v", res), nil
 }
 
 func getCalculations(c echo.Context) error {
@@ -81,7 +81,7 @@ func postCalculations(c echo.Context) error {
 
 	res, err := calculateExpression(req.Expression)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": fmt.Sprint("Invalid expression: ", err)})
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": fmt.Sprintf("Invalid expression: %v", err)})
 	}
 
 	calc := Calculation{ID: uuid.NewString(), Expression: req.Expression, Result: res}
@@ -99,7 +99,7 @@ func patchCalculations(c echo.Context) error {
 
 	res, err := calculateExpression(req.Expression)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": fmt.Sprint("Invalid expression: ", err)})
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": fmt.Sprintf("Invalid expression: %v", err)})
 	}
 
 	for i, calc := range calculations {
