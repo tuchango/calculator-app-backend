@@ -144,6 +144,7 @@ func main() {
 	e := echo.New()
 
 	e.Use(middleware.Logger())
+	e.Use(middleware.CORS())
 
 	e.GET("/calculations", getCalculations)
 	e.POST("/calculations", postCalculations)
