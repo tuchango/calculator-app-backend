@@ -16,7 +16,7 @@ import (
 )
 
 type Calculation struct {
-	ID         string `json:"id"`
+	ID         string `json:"id" gorm:"primary key"`
 	Expression string `json:"expression"`
 	Result     string `json:"result"`
 }
