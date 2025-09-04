@@ -1,4 +1,4 @@
-module calculator
+module calculator-app-backend
 
 go 1.24.6
 
