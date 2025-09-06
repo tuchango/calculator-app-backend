@@ -68,14 +68,14 @@ func (s *calcService) UpdateCalculation(id, expression string) (Calculation, err
 
 	result, err := s.calculateExpression(expression)
 	if err != nil {
-		return Calculation{}, err
+		return Calculation{}, fmt.Errorf("failed to calculate expression in service: %w", err)
 	}
 
 	calc.Expression = expression
 	calc.Result = result
 
 	if err := s.repo.UpdateCalculation(calc); err != nil {
-		return Calculation{}, err
+		return Calculation{}, fmt.Errorf("service: failed to update calculation with id %s: %w", id, err)
 	}
 
 	return calc, nil
