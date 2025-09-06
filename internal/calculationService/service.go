@@ -25,7 +25,6 @@ func NewCalculationService(r CalculationRepository) CalculationService {
 
 func (s *calcService) CreateCalculation(expression string) (Calculation, error) {
 	result, err := s.calculateExpression(expression)
-
 	if err != nil {
 		return Calculation{}, err
 	}
@@ -44,22 +43,30 @@ func (s *calcService) CreateCalculation(expression string) (Calculation, error) 
 }
 
 func (s *calcService) GetAllCalculations() ([]Calculation, error) {
-	return s.repo.GetAllCalculations()
+	calcs, err := s.repo.GetAllCalculations()
+	if err != nil {
+		return nil, err
+	}
+
+	return calcs, nil
 }
 
 func (s *calcService) GetCalculationById(id string) (Calculation, error) {
-	return s.repo.GetCalculationById(id)
+	calc, err := s.repo.GetCalculationById(id)
+	if err != nil {
+		return Calculation{}, err
+	}
+
+	return calc, nil
 }
 
 func (s *calcService) UpdateCalculation(id, expression string) (Calculation, error) {
 	calc, err := s.repo.GetCalculationById(id)
-
 	if err != nil {
 		return Calculation{}, err
 	}
 
 	result, err := s.calculateExpression(expression)
-
 	if err != nil {
 		return Calculation{}, err
 	}
@@ -75,7 +82,12 @@ func (s *calcService) UpdateCalculation(id, expression string) (Calculation, err
 }
 
 func (s *calcService) DeleteCalculation(id string) error {
-	return s.repo.DeleteCalculation(id)
+	err := s.repo.DeleteCalculation(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s *calcService) calculateExpression(expression string) (string, error) {
@@ -88,5 +100,6 @@ func (s *calcService) calculateExpression(expression string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	return fmt.Sprintf("%v", res), nil
 }

@@ -18,7 +18,6 @@ func NewCalculationHandler(s calculationService.CalculationService) *calcHandler
 
 func (h *calcHandler) GetCalculations(c echo.Context) error {
 	calculations, err := h.service.GetAllCalculations()
-
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Could not get calculations"})
 	}
@@ -34,7 +33,6 @@ func (h *calcHandler) PostCalculations(c echo.Context) error {
 	}
 
 	calc, err := h.service.CreateCalculation(req.Expression)
-
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Could not create calculation"})
 	}
@@ -51,7 +49,6 @@ func (h *calcHandler) PatchCalculations(c echo.Context) error {
 	}
 
 	calc, err := h.service.UpdateCalculation(id, req.Expression)
-
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Could not update calculation"})
 	}
