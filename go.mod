@@ -1,4 +1,4 @@
-module calculator-app-backend
+module github.com/tuchango/calculator-app-backend
 
 go 1.24.6
 

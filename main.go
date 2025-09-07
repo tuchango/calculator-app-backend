@@ -1,8 +1,8 @@
 package main
 
 import (
-	"calculator-app-backend/internal/calculation"
-	"calculator-app-backend/internal/db"
+	"github.com/tuchango/calculator-app-backend/internal/calculation"
+	"github.com/tuchango/calculator-app-backend/internal/db"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

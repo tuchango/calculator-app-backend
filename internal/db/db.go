@@ -1,10 +1,11 @@
 package db
 
 import (
-	"calculator-app-backend/internal/calculation"
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/tuchango/calculator-app-backend/internal/calculation"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
