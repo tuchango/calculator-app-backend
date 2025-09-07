@@ -1,18 +1,16 @@
-package handlers
+package calculation
 
 import (
 	"net/http"
-
-	"calculator-app-backend/internal/calculation"
 
 	"github.com/labstack/echo/v4"
 )
 
 type calcHandler struct {
-	service calculation.CalculationService
+	service CalculationService
 }
 
-func NewCalculationHandler(s calculation.CalculationService) *calcHandler {
+func NewCalculationHandler(s CalculationService) *calcHandler {
 	return &calcHandler{service: s}
 }
 
@@ -26,7 +24,7 @@ func (h *calcHandler) GetCalculations(c echo.Context) error {
 }
 
 func (h *calcHandler) PostCalculations(c echo.Context) error {
-	var req calculation.CalculationRequest
+	var req CalculationRequest
 
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request"})
@@ -42,7 +40,7 @@ func (h *calcHandler) PostCalculations(c echo.Context) error {
 
 func (h *calcHandler) PatchCalculations(c echo.Context) error {
 	id := c.Param("id")
-	var req calculation.CalculationRequest
+	var req CalculationRequest
 
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid request"})
