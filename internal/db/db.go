@@ -1,7 +1,7 @@
 package db
 
 import (
-	"calculator-app-backend/internal/calculationService"
+	"calculator-app-backend/internal/calculation"
 	"fmt"
 	"log"
 	"os"
@@ -30,7 +30,7 @@ func InitDB() *gorm.DB {
 		log.Fatalf("Could not connect to database: %v", err)
 	}
 
-	if err = db.AutoMigrate(&calculationService.Calculation{}); err != nil {
+	if err = db.AutoMigrate(&calculation.Calculation{}); err != nil {
 		log.Fatalf("Could not migrate: %v", err)
 	}
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"calculator-app-backend/internal/calculationService"
+	"calculator-app-backend/internal/calculation"
 	"calculator-app-backend/internal/db"
 	"calculator-app-backend/internal/handlers"
 
@@ -11,8 +11,8 @@ import (
 
 func main() {
 	database := db.InitDB()
-	calcRepo := calculationService.NewCalculationRepository(database)
-	calcService := calculationService.NewCalculationService(calcRepo)
+	calcRepo := calculation.NewCalculationRepository(database)
+	calcService := calculation.NewCalculationService(calcRepo)
 	calcHandler := handlers.NewCalculationHandler(calcService)
 
 	e := echo.New()

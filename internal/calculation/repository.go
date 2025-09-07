@@ -1,4 +1,4 @@
-package calculationService
+package calculation
 
 import "gorm.io/gorm"
 
