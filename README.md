@@ -73,3 +73,13 @@ DELETE /calculations/:id
 - `main.go` — точка входа
 - `internal/calculation/` — бизнес-логика (handler, service, repository, model)
 - `internal/db/` — инициализация базы
+
+## Тестирование
+
+Проект включает базовые API тесты. Подробнее о тестах можно узнать в [tests/README.md](tests/README.md).
+
+Для запуска тестов выполните:
+
+```sh
+go test ./tests
+```
